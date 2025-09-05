@@ -1,0 +1,252 @@
+{
+	"info": {
+		"_postman_id": "64679c6c-fc93-4f81-a624-32e5d50b930a",
+		"name": "User Authentication",
+		"description": "This is just an API for user Authentication",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34549714",
+		"_collection_link": "https://www.postman.com/mission-candidate-65699771/michael-s-workspace/collection/9p54o8f/user-authentication?action=share&source=collection_link&creator=34549714"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "user signup",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"michael\",\r\n    \"email\": \"chineducmichael@gmail.com\",\r\n    \"password\": \"test1234\",\r\n    \"passwordConfirm\": \"test1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/v1/users/signup",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"signup"
+							]
+						},
+						"description": "## User Signup Endpoint\n\nThis endpoint allows new users to register for an account by providing their details. Upon successful registration, a token is returned, which can be used for authentication in subsequent requests.\n\n### Request\n\n- **Method**: POST\n    \n- **Endpoint**: `{{URL}}/api/v1/users/signup`\n    \n\n#### Request Body\n\nThe request must include a JSON object with the following parameters:\n\n- **name** (string): The full name of the user.\n    \n- **email** (string): The email address of the user, which must be unique.\n    \n- **password** (string): The password chosen by the user for their account.\n    \n- **passwordConfirm** (string): A confirmation of the password to ensure it matches the original password.\n    \n\n**Example Request Body:**\n\n``` json\n{\n  \"name\": \"michael\",\n  \"email\": \"chineducmichael@gmail.com\",\n  \"password\": \"test1234\",\n  \"passwordConfirm\": \"test1234\"\n}\n\n ```\n\n### Response\n\nOn a successful signup, the server responds with a status code of **201 Created** and a JSON object containing the following structure:\n\n- **status** (string): The status of the request (typically empty on success).\n    \n- **token** (string): A token that can be used for authenticating subsequent requests.\n    \n- **data** (object): Contains user details:\n    \n    - **user** (object): Information about the newly created user:\n        \n        - **name** (string): The name of the user.\n            \n        - **email** (string): The email address of the user.\n            \n        - **role** (string): The role assigned to the user (e.g., admin, user).\n            \n        - **active** (boolean): Indicates whether the user's account is active.\n            \n        - **_id** (string): The unique identifier for the user.\n            \n        - **__v** (number): The version key for the user document.\n            \n\n**Example Response:**\n\n``` json\n{\n  \"status\": \"\",\n  \"token\": \"\",\n  \"data\": {\n    \"user\": {\n      \"name\": \"\",\n      \"email\": \"\",\n      \"role\": \"\",\n      \"active\": true,\n      \"_id\": \"\",\n      \"__v\": 0\n    }\n  }\n}\n\n ```\n\nThis endpoint is essential for user registration, enabling users to create accounts and receive authentication tokens for secure access to other API functionalities."
+					},
+					"response": []
+				},
+				{
+					"name": "user login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.set(\"jwt\", pm.response.json().token);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"admin@natours.io\",\r\n    \"password\":\"test1234\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/v1/users/login",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"login"
+							]
+						},
+						"description": "## User Login API\n\nThis endpoint allows users to log in to the application by providing their credentials. Upon successful authentication, a token is returned which can be used for subsequent requests that require authorization.\n\n### Request\n\n- **Method:** POST\n    \n- **Endpoint:** `{{URL}}/api/v1/users/login`\n    \n- **Content-Type:** application/json\n    \n\n#### Request Body\n\nThe request must include the following parameters in JSON format:\n\n- `email` (string): The email address of the user attempting to log in.\n    \n- `password` (string): The password associated with the user's account.\n    \n\n**Example Request Body:**\n\n``` json\n{\n  \"email\": \"user@example.com\",\n  \"password\": \"yourpassword\"\n}\n\n ```\n\n### Response\n\n- **Status Code:** 200 OK\n    \n- **Content-Type:** application/json\n    \n\n#### Response Body\n\nOn a successful login, the response will contain the following fields:\n\n- `status` (string): The status of the login attempt.\n    \n- `token` (string): The authentication token that must be included in future requests to access protected resources.\n    \n- `data` (object): Contains user information.\n    \n    - `user` (object): Details about the logged-in user.\n        \n        - `_id` (string): Unique identifier for the user.\n            \n        - `role` (string): The role of the user (e.g., admin, user).\n            \n        - `name` (string): The name of the user.\n            \n        - `email` (string): The email of the user.\n            \n        - `photo` (string): URL to the user's profile photo.\n            \n        - `__v` (number): Version key for the user document.\n            \n\n**Example Response:**\n\n``` json\n{\n  \"status\": \"success\",\n  \"token\": \"your_jwt_token\",\n  \"data\": {\n    \"user\": {\n      \"_id\": \"user_id\",\n      \"role\": \"user\",\n      \"name\": \"User Name\",\n      \"email\": \"user@example.com\",\n      \"photo\": \"url_to_photo\",\n      \"__v\": 0\n    }\n  }\n}\n\n ```\n\n### Notes\n\n- Ensure that the email and password are correct to avoid authentication failures.\n    \n- The returned token should be stored securely and included in the Authorization header for subsequent requests."
+					},
+					"response": []
+				},
+				{
+					"name": "user logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.environment.unset(\"jwt\");"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{URL}}/api/v1/users/logout",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"logout"
+							]
+						},
+						"description": "## Logout User\n\nThis endpoint is used to log out a user from the application. When a user successfully logs out, their session is terminated, and they will no longer have access to protected resources until they log in again.\n\n### Request\n\n- **Method:** GET\n    \n- **Endpoint:** `{{URL}}/api/v1/users/logout`\n    \n\nThis endpoint does not require any request body or parameters.\n\n### Response\n\nUpon a successful logout, the server will respond with a JSON object containing the following fields:\n\n- **status**: A string indicating the status of the logout operation.\n    \n- **message**: A string providing additional information about the logout operation.\n    \n\n#### Example Response\n\n``` json\n{\n    \"status\": \"\",\n    \"message\": \"\"\n}\n\n ```\n\nA successful response will have a status code of `200`, indicating that the logout process has been completed successfully."
+					},
+					"response": []
+				},
+				{
+					"name": "forgot password",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"chineducmichael@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/v1/users/forgotPassword",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"forgotPassword"
+							]
+						},
+						"description": "### Forgot Password API\n\nThis endpoint allows users to initiate a password reset process by submitting their registered email address. Upon successful execution, the user will receive instructions on how to reset their password in their email.\n\n#### Request\n\n- **Method**: POST\n    \n- **Endpoint**: `{{URL}}/api/v1/users/forgotPassword`\n    \n- **Content-Type**: application/json\n    \n\n##### Request Body\n\nThe request body must be in JSON format and should include the following parameter:\n\n- `email` (string): The email address associated with the user's account. This is required for the password reset process.\n    \n\n**Example Request Body**:\n\n``` json\n{\n  \"email\": \"user@example.com\"\n}\n\n ```\n\n#### Response\n\nThe response will be returned in JSON format and contains the following fields:\n\n- `status` (string): Indicates the status of the request. This may provide information regarding the success or failure of the operation.\n    \n- `message` (string): A message providing additional context about the request's outcome.\n    \n\n**Example Response**:\n\n``` json\n{\n  \"status\": \"success\",\n  \"message\": \"Password reset instructions have been sent to your email.\"\n}\n\n ```\n\n#### Notes\n\n- A successful request will return a `200 OK` status.\n    \n- Ensure that the email provided is valid and associated with an existing account to receive the password reset instructions."
+					},
+					"response": []
+				},
+				{
+					"name": "reset password",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\":\"test12345\",\r\n    \"passwordConfirm\":\"test12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/v1/users/resetPassword/ca39d8907c204b40f9556c7ec9147c61e4424149eee731012c3f28678c8ce186",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"resetPassword",
+								"ca39d8907c204b40f9556c7ec9147c61e4424149eee731012c3f28678c8ce186"
+							]
+						},
+						"description": "### Reset User Password\n\nThis endpoint allows users to reset their password. It is a PATCH request that updates the password for a specific user identified by a unique user ID in the URL. The request must include the new password and a confirmation of the new password to ensure accuracy.\n\n#### Request Format\n\n- **Method**: PATCH\n    \n- **URL**: `{{URL}}/api/v1/users/resetPassword/{userId}`\n    \n\n#### Request Body\n\nThe request body must be in JSON format and include the following parameters:\n\n- **password** (string): The new password that the user wishes to set.\n    \n- **passwordConfirm** (string): A confirmation of the new password. This must match the `password` field.\n    \n\n**Example Request Body:**\n\n``` json\n{\n  \"password\": \"test12345\",\n  \"passwordConfirm\": \"test12345\"\n}\n\n ```\n\n#### Response Structure\n\nUpon a successful password reset, the API will return a response with a status code of 200. The response will contain a JSON object with the following structure:\n\n- **status** (string): The status of the request.\n    \n- **token** (string): A token that may be used for authentication in subsequent requests.\n    \n- **data** (object): Contains user details after the password reset.\n    \n    - **user** (object): Information about the user.\n        \n        - **_id** (string): The unique identifier of the user.\n            \n        - **name** (string): The name of the user.\n            \n        - **email** (string): The email address of the user.\n            \n        - **role** (string): The role assigned to the user.\n            \n        - **__v** (integer): Version key for the user document.\n            \n        - **passwordChangedAt** (string): Timestamp indicating when the password was last changed.\n            \n\n**Example Response:**\n\n``` json\n{\n  \"status\": \"\",\n  \"token\": \"\",\n  \"data\": {\n    \"user\": {\n      \"_id\": \"\",\n      \"name\": \"\",\n      \"email\": \"\",\n      \"role\": \"\",\n      \"__v\": 0,\n      \"passwordChangedAt\": \"\"\n    }\n  }\n}\n\n ```\n\nThis endpoint is essential for maintaining account security by allowing users to update their passwords securely."
+					},
+					"response": []
+				}
+			],
+			"description": "This is all that has to do with the Authentication"
+		},
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "get all user",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/v1/users",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						},
+						"description": "## API Endpoint: Get Users\n\n### Description\n\nThis endpoint retrieves a list of users from the system. It is primarily used to fetch user details, which may include their roles, names, emails, and profile photos.\n\n### Request\n\n- **Method**: GET\n    \n- **URL**: `{{URL}}/api/v1/users`\n    \n\n### Response\n\nOn a successful request, the API will return a JSON object with the following structure:\n\n- **status**: A string indicating the status of the request (e.g., success or error).\n    \n- **result**: An integer indicating the number of results returned (0 if no users are found).\n    \n- **data**: An object containing the user information.\n    \n    - **data**: An array of user objects, where each user object includes:\n        \n        - **_id**: The unique identifier of the user.\n            \n        - **role**: The role assigned to the user (e.g., admin, user).\n            \n        - **name**: The full name of the user.\n            \n        - **email**: The email address of the user.\n            \n        - **photo**: A URL to the user's profile photo.\n            \n        - **__v**: A version key for the user object.\n            \n\n### Example Response\n\n``` json\n{\n  \"status\": \"\",\n  \"result\": 0,\n  \"data\": {\n    \"data\": [\n      {\n        \"_id\": \"\",\n        \"role\": \"\",\n        \"name\": \"\",\n        \"email\": \"\",\n        \"photo\": \"\",\n        \"__v\": 0\n      }\n    ]\n  }\n}\n\n ```\n\n### Notes\n\n- Ensure that you have the necessary permissions to access this endpoint.\n    \n- The response will vary based on the number of users in the system. If no users are present, the `result` will be `0`, and the `data` array will be empty."
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

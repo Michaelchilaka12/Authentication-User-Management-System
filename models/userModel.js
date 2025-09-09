@@ -4,7 +4,7 @@ const validator = require('validator');
 const bcrypt = require('bcrypt');
 
 
-const userSchema = new mongoose.Schema({
+const usersSchema = new mongoose.Schema({
     name:{
         type: String,
         required: [true, 'A user must have a name']
@@ -51,7 +51,7 @@ const userSchema = new mongoose.Schema({
 });
 
 //password encryption
-userSchema.pre('save', async function (next) {
+usersSchema.pre('save', async function (next) {
     
     //only run this fuction if the password is not actually modified
     if(!this.isModified('password')) return next()
@@ -66,7 +66,7 @@ userSchema.pre('save', async function (next) {
 
 
 //generate password reset token
-userSchema.methods.createPasswordResetToken = function() {
+usersSchema.methods.createPasswordResetToken = function() {
     const resetToken = crypto.randomBytes(32).toString("hex");
 
     this.passwordResetToken = crypto.createHash("sha256")
@@ -79,6 +79,6 @@ userSchema.methods.createPasswordResetToken = function() {
 }
 
 
-const User = mongoose.model('User-Auth-management',userSchema);
+const User = mongoose.model('User-Auth-management',usersSchema);
 
 module.exports = User;
